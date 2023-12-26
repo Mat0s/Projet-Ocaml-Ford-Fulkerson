@@ -1,4 +1,8 @@
 open Gfile
+open Tools
+open Printf
+open Algo_ford_fulkerson
+
     
 let () =
 
@@ -28,8 +32,29 @@ let () =
   (* Open file *)
   let graph = from_file infile in
 
+  (*let result = clone_nodes graph in*)
+
+  let f lbl = int_of_string lbl in
+  let f1 lbl = string_of_int lbl in
+  let result2 = gmap graph f in
+  (*let result3 = gmap result2 f1 in*)
+
+  (*let result4 = add_arc result2 3 1 100 in*)
+  
+  let init_gr = init result2 in
+  let init_gr2 = gmap init_gr f1 in
+
+  let () = export "dot_format_graphs/init_gr" init_gr2 in
+
+  let test_find_path = find_path result2 0 4 in
+
+  let () = printf "[" in
+  let () = List.iter (printf "%d ") test_find_path in
+  let () = printf "]" in
+
+
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile graph in
+  let () = write_file outfile init_gr2 in
 
   ()
 
