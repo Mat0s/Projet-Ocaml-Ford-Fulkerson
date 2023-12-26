@@ -52,6 +52,17 @@ let write_file path graph =
   close_out ff ;
   ()
 
+let export path gr = 
+  let op = open_out path in
+
+  fprintf op "digraph finite_state_machine {rankdir=LR; node [shape = circle];";
+
+  e_iter gr (fun arc -> fprintf op "%d -> %d [label = %s]\n" arc.src arc.tgt arc.lbl);
+  fprintf op "}";
+
+  close_out op;
+  ()
+
 (* Reads a line with a node. *)
 let read_node graph line =
   try Scanf.sscanf line "n %f %f %d" (fun _ _ id -> new_node graph id)

@@ -15,23 +15,22 @@ let gr = add_arc gr arc.src arc.tgt (-add) in
 gr
 
 let find_path g source dest =
-  let rec aux g source dest cheminl =  
-    let out = out_arcs g source in
-    let out2 = List.map (fun (x) -> x.src, x.tgt) out in
-    let rec select_arc arclist =
-      match arclist with
-      | [] -> []
-      | (s,t)::rest -> 
-        if (List.exists (fun y-> y=s) cheminl) || (t=0) then 
-          select_arc rest
-        else match aux g s dest (source::cheminl) with
-          | [] -> select_arc rest
-          | li -> li
+  let rec aux visited current_path node =
+    if node = dest then
+      List.rev (node :: current_path)
+    else if List.mem node visited then
+      []
+    else
+      let out_arcs = out_arcs g node in
+      let next_nodes = List.map (fun arc -> arc.tgt) out_arcs in
+      let valid_next_nodes = List.filter (fun n -> not (List.mem n current_path)) next_nodes in
+      List.fold_left (fun acc next_node ->
+        if acc <> [] then
+          acc
+        else
+          aux (node :: visited) (node :: current_path) next_node
+      ) [] valid_next_nodes
+  in
+  aux [] [] source
 
-    in
-    if source=dest then
-      dest::cheminl
-    else select_arc out2
-  in 
-  aux g source dest [] ;;
-;;
+

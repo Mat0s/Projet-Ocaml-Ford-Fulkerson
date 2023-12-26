@@ -46,9 +46,9 @@ let () =
 
   let () = export "dot_format_graphs/init_gr" init_gr2 in
 
-  let test_find_path = find_path result2 0 4 in
+  let test_find_path = find_path result2 0 5 in
 
-  let () = printf "[" in
+  let () = printf "path from 0 to 5 in graph 1 : [" in
   let () = List.iter (printf "%d ") test_find_path in
   let () = printf "]" in
 
