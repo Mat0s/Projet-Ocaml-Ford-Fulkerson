@@ -52,9 +52,13 @@ let () =
   let () = List.iter (printf "%d ") test_find_path in
   let () = printf "]" in
 
+  let test_update_graph = update_graph result2 test_find_path in
+
+  let updated_graph = gmap test_update_graph f1 in
+  let () = export "dot_format_graphs/update_gr" updated_graph in
 
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile init_gr2 in
+  let () = write_file outfile updated_graph in
 
   ()
 
