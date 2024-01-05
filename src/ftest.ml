@@ -1,6 +1,6 @@
 open Gfile
 open Tools
-open Printf
+(*open Printf*)
 open Algo_ford_fulkerson
 
     
@@ -46,19 +46,29 @@ let () =
 
   let () = export "dot_format_graphs/init_gr" init_gr2 in
 
-  let test_find_path = find_path result2 0 5 in
+  (*let test_find_path = find_path init_gr 0 5 in
 
   let () = printf "path from 0 to 5 in graph 1 : [" in
   let () = List.iter (printf "%d ") test_find_path in
   let () = printf "]" in
 
-  let test_update_graph = update_graph result2 test_find_path in
+  let find_capacity_min_test = find_capacity_min init_gr test_find_path in
+  let () = printf "find_capacity_min_test : %d" find_capacity_min_test in
 
-  let updated_graph = gmap test_update_graph f1 in
-  let () = export "dot_format_graphs/update_gr" updated_graph in
+  
+
+  let increase_flow_test = increase_flow init_gr test_find_path find_capacity_min_test in
+  let increase_flow_graph =  gmap increase_flow_test f1 in
+  let () = export "dot_format_graphs/increase_flow_graph" increase_flow_graph in*)
+
+
+  let final_graph_test = ford_fulkerson init_gr 0 5 in
+  let final_graph =  gmap final_graph_test f1 in
+  let () = export "dot_format_graphs/final_graph" final_graph in
+
 
   (* Rewrite the graph that has been read. *)
-  let () = write_file outfile updated_graph in
+  let () = write_file outfile final_graph in
 
   ()
 
