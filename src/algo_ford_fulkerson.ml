@@ -1,5 +1,6 @@
 open Tools
 open Graph
+open Printf
 
 let init gr =
   let aux gr arc1 = add_arc gr arc1.tgt arc1.src 0 in
@@ -67,6 +68,14 @@ let increase_flow graph path min_capacity =
 
   let ford_fulkerson gr source dest =
     let rec loop graph =
+      let test_find_path = find_path graph 0 2 in
+
+      let () = printf "path : [" in
+      let () = List.iter (printf "%d ") test_find_path in
+      let () = printf "]" in
+    
+      let find_capacity_min_test = find_capacity_min graph test_find_path in
+      let () = printf "find_capacity_min_test : %d" find_capacity_min_test in
       match find_path graph source dest with
       | [] -> graph  
       | path ->
@@ -75,6 +84,70 @@ let increase_flow graph path min_capacity =
         loop updated_graph
     in
     loop gr
+
+
+
+let f_graph gr = 
+  let get_all_nodes gr =
+    let add_nodes acu id =
+      id::acu in
+      n_fold gr add_nodes []
+  in
+  let all_nodes = get_all_nodes gr in
+
+  let compare_arcs arc arc2  = if (arc2.lbl>arc.lbl) then (add_arc gr arc2.src arc2.tgt (-arc.lbl)) else 
+    (add_arc gr arc.src arc.tgt (-arc2.lbl))  in
   
+  
+  let () = List.iter (printf "%d ") all_nodes in
+
+  let aux acu_gr2 node = 
+    let arcs = (out_arcs gr node) in
+    
+    match (out_arcs gr node) with
+      |[]->acu_gr2 
+      |arc::rest -> let arc_rev = find_arc gr arc.tgt arc.src in
+                    match arc_rev with
+                  |Some arc_r -> compare_arcs arc arc_r
+                  |None ->acu_gr2
+
+  gr_final = n_fold gr aux (clone_nodes gr)
+
+ 
+
+
+
+
+
   
 
+
+
+
+    
+    
+
+
+  
+
+
+
+
+  
+  
+  
+(*let tabVilles = ["Toulouse"; "Dubai"; "Marseille"; "Lyon"; "Bruxelle"; "Reykjavik"; "Washington"; "Pekin"; "Tokyo"; "Seoul"; "Sydney"; "Bordeaux"; "Casablanca"] 
+
+let getVille id = List.nth tabVilles id*)
+
+(*let export2 path gr=
+
+    let op = open_out path in
+  
+    fprintf op "digraph finite_state_machine {rankdir=LR; node [shape = circle];";
+  
+    e_iter gr (fun arc -> fprintf op "%s -> %s [label = %s]\n" (getVille arc.src) (getVille arc.tgt) arc.lbl);
+    fprintf op "}";
+  
+    close_out op;
+    () *)

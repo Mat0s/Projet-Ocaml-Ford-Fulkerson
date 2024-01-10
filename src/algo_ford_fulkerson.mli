@@ -12,3 +12,8 @@ val increase_flow : int graph -> id list -> int -> int graph
 val update_arcs2 : int graph ->'a arc -> int -> int graph
 
 val ford_fulkerson :int graph -> id -> id -> int graph
+
+
+val remove_duplicate_arcs : 'a arc list -> 'a arc list
+
+val remove_duplicate_arcs_from_graph : int graph -> int graph

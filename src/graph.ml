@@ -39,6 +39,7 @@ type 'a arc =
     tgt: id ;
     lbl: 'a }
 
+
 (* A graph is just a list of pairs: a node & its outgoing arcs. *)
 type 'a graph = (id * 'a arc list) list
 
