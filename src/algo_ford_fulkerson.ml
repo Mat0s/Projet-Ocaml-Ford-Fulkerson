@@ -87,67 +87,35 @@ let increase_flow graph path min_capacity =
 
 
 
-let f_graph gr = 
-  let get_all_nodes gr =
-    let add_nodes acu id =
-      id::acu in
-      n_fold gr add_nodes []
-  in
-  let all_nodes = get_all_nodes gr in
 
-  let compare_arcs arc arc2  = if (arc2.lbl>arc.lbl) then (add_arc gr arc2.src arc2.tgt (-arc.lbl)) else 
-    (add_arc gr arc.src arc.tgt (-arc2.lbl))  in
-  
-  
-  let () = List.iter (printf "%d ") all_nodes in
+let transform gr_init gr_ecart =
+  e_fold gr_init 
+  (fun gr_flot arc -> 
+    let arc_ecart = find_arc gr_ecart arc.src arc.tgt in
+    let lbl_ecart = match arc_ecart with 
+    | Some a -> a.lbl
+    | None -> 0 
+    in
 
-  let aux acu_gr2 node = 
-    let arcs = (out_arcs gr node) in
+    create_add_arc2 gr_flot arc.src arc.tgt (arc.lbl-lbl_ecart,arc.lbl)) 
     
-    match (out_arcs gr node) with
-      |[]->acu_gr2 
-      |arc::rest -> let arc_rev = find_arc gr arc.tgt arc.src in
-                    match arc_rev with
-                  |Some arc_r -> compare_arcs arc arc_r
-                  |None ->acu_gr2
-
-  gr_final = n_fold gr aux (clone_nodes gr)
-
- 
-
-
-
-
-
-  
-
-
-
-
-    
-    
-
-
-  
-
-
+    (clone_nodes gr_init)
 
 
   
   
-  
-(*let tabVilles = ["Toulouse"; "Dubai"; "Marseille"; "Lyon"; "Bruxelle"; "Reykjavik"; "Washington"; "Pekin"; "Tokyo"; "Seoul"; "Sydney"; "Bordeaux"; "Casablanca"] 
+let tabVilles = ["Toulouse"; "Dubai"; "Marseille"; "Lyon"; "Bruxelle"; "Reykjavik"; "Washington"; "Pekin"; "Tokyo"; "Seoul"; "Sydney"; "Bordeaux"; "Casablanca"] 
 
-let getVille id = List.nth tabVilles id*)
+let getVille id = List.nth tabVilles id
 
-(*let export2 path gr=
+let export2 path gr=
 
     let op = open_out path in
   
     fprintf op "digraph finite_state_machine {rankdir=LR; node [shape = circle];";
   
-    e_iter gr (fun arc -> fprintf op "%s -> %s [label = %s]\n" (getVille arc.src) (getVille arc.tgt) arc.lbl);
+    e_iter gr (fun arc -> fprintf op "%s -> %s [label = \"%s\"]\n" (getVille arc.src) (getVille arc.tgt) arc.lbl);
     fprintf op "}";
   
     close_out op;
-    () *)
+    () 

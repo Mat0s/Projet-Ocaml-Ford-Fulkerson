@@ -57,7 +57,7 @@ let export path gr =
 
   fprintf op "digraph finite_state_machine {rankdir=LR; node [shape = circle];";
 
-  e_iter gr (fun arc -> fprintf op "%d -> %d [label = %s]\n" arc.src arc.tgt arc.lbl);
+  e_iter gr (fun arc -> fprintf op "%d -> %d [label = \"%s\"]\n" arc.src arc.tgt arc.lbl);
   fprintf op "}";
 
   close_out op;

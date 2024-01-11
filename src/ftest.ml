@@ -32,35 +32,30 @@ let () =
   (* Open file *)
   let graph = from_file infile in
 
-  (*let result = clone_nodes graph in*)
+  let () = export "dot_format_graphs/graph" graph in
 
-  let f lbl = int_of_string lbl in
-  let f1 lbl = string_of_int lbl in
-  let result2 = gmap graph f in
-  (*let result3 = gmap result2 f1 in*)
+  let int_string lbl = int_of_string lbl in
+  let string_int lbl = string_of_int lbl in
+  let string_tuple (a,b) = (string_of_int a)^"/"^(string_of_int b) in
 
-  (*let result4 = add_arc result2 3 1 100 in*)
+  let graph_int = gmap graph int_string in
+
   
-  let init_gr = init result2 in
-  let init_gr2 = gmap init_gr f1 in
+  let init_graph = init graph_int in
+  let init_graph_print = gmap init_graph string_int in
 
-  let () = export "dot_format_graphs/init_gr2" init_gr2 in
+  let () = export "dot_format_graphs/init_graph" init_graph_print in
 
-  (*let increase_flow_test = increase_flow init_gr test_find_path find_capacity_min_test in
-  let increase_flow_graph =  gmap increase_flow_test f1 in
-  let () = export "dot_format_graphs/increase_flow_graph" increase_flow_graph in*)
+  let ecart_graph = ford_fulkerson init_graph 0 5 in
+  let ecart_graph_print =  gmap ecart_graph string_int in
+  let () = export "dot_format_graphs/ecart_graph" ecart_graph_print in
+
+  let flow_graph = transform graph_int ecart_graph in
+  let flow_graph_print =  gmap flow_graph string_tuple in
+  let () = export "dot_format_graphs/flow_graph" flow_graph_print in
 
 
-  let final_graph_test = ford_fulkerson init_gr 0 2 in
-  let final_graph =  gmap final_graph_test f1 in
-  let () = export "dot_format_graphs/final_graph2" final_graph in
-
-  let real_final_graph = remove_duplicate_arcs_from_graph final_graph_test in
-  let real_f =  gmap real_final_graph f1 in
-  let () = export "dot_format_graphs/real_final" real_f in
-
-  (* Rewrite the graph that has been read. *)
-  let () = write_file outfile final_graph in
+  let () = write_file outfile flow_graph_print in
 
   ()
 
