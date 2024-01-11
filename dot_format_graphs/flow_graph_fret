@@ -1,0 +1,5 @@
+digraph finite_state_machine {rankdir=LR; node [shape = circle];Toulouse -> Dubai [label = "2/2"]
+Toulouse -> Marseille [label = "4/4"]
+Dubai -> Marseille [label = "2/3"]
+Dubai -> Toulouse [label = "0/4"]
+}

@@ -2,6 +2,7 @@ open Tools
 open Graph
 open Printf
 
+
 let init gr =
   let aux gr arc1 = add_arc gr arc1.tgt arc1.src 0 in
   e_fold gr aux gr
@@ -97,18 +98,31 @@ let transform gr_init gr_ecart =
     | None -> 0 
     in
 
-    create_add_arc2 gr_flot arc.src arc.tgt (arc.lbl-lbl_ecart,arc.lbl)) 
+    create_add_arc2 gr_flot arc.src arc.tgt (max (arc.lbl-lbl_ecart) 0,arc.lbl)) 
     
     (clone_nodes gr_init)
 
 
+(*Application : Chemin de Fret d'une ville A à une ville B*)
   
-  
-let tabVilles = ["Toulouse"; "Dubai"; "Marseille"; "Lyon"; "Bruxelle"; "Reykjavik"; "Washington"; "Pekin"; "Tokyo"; "Seoul"; "Sydney"; "Bordeaux"; "Casablanca"] 
+let tabVilles = ["Toulouse"; "Dubai"; "Marseille"; "Lyon"; "Bruxelles"; "Reykjavik"; "Washington"; "Pekin"; "Tokyo"; "Seoul"; "Sydney"; "Bordeaux"; "Casablanca"] 
 
 let getVille id = List.nth tabVilles id
 
-let export2 path gr=
+let getId ville = 
+  let rec aux acu l = match l with    
+                    |x::rest -> if x=ville then acu else aux (acu+1) rest
+                    |[] -> raise Not_found
+  in
+  aux 0 tabVilles
+
+
+
+
+  
+
+
+let export_ville path gr=
 
     let op = open_out path in
   
@@ -119,3 +133,64 @@ let export2 path gr=
   
     close_out op;
     () 
+
+
+
+let file = "graphs/graph_villes.txt"
+
+
+let fichier nom_fichier =
+
+  let string_to_list str =
+    let len = String.length str in
+    let rec split acc start =
+      if start >= len then
+        List.rev acc
+      else
+        match str.[start] with
+        | '[' | ';' -> split acc (start + 1)
+        | ']' -> List.rev acc
+        | _ ->
+          let end_pos =
+            try String.index_from str start ';'
+            with Not_found -> String.index_from str start ']'
+          in
+          let city = String.sub str start (end_pos - start) in
+          split (city :: acc) (end_pos + 1)
+    in
+    split [] 1
+  in
+  
+  try
+    let canal = open_in nom_fichier in
+    let oc = open_out file in
+    try
+      while true do
+        let ligne = input_line canal in
+        let list_ville = string_to_list ligne in
+        let node = List.hd list_ville in
+        let _arcs = List.tl list_ville in
+
+        Printf.fprintf oc "n 1 50 %d" (getId node);
+        Printf.fprintf oc "\n";
+          (*print les arcs dans le fichier*)
+
+
+        (*List.iter (fun elem -> Printf.fprintf oc "%s " elem) list_ville;*)
+        
+
+        
+        
+
+
+        (*Printf.fprintf oc "%s" node;*)
+        
+        (*print_endline ligne;*)
+      done
+    with
+    | End_of_file -> close_in canal
+  with
+  | Sys_error msg -> print_endline ("Erreur d'ouverture du fichier : " ^ msg)
+
+
+  

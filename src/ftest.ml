@@ -1,6 +1,5 @@
 open Gfile
 open Tools
-
 open Algo_ford_fulkerson
 
     
@@ -46,7 +45,7 @@ let () =
 
   let () = export "dot_format_graphs/init_graph" init_graph_print in
 
-  let ecart_graph = ford_fulkerson init_graph 0 5 in
+  let ecart_graph = ford_fulkerson init_graph 0 2 in
   let ecart_graph_print =  gmap ecart_graph string_int in
   let () = export "dot_format_graphs/ecart_graph" ecart_graph_print in
 
@@ -54,6 +53,11 @@ let () =
   let flow_graph_print =  gmap flow_graph string_tuple in
   let () = export "dot_format_graphs/flow_graph" flow_graph_print in
 
+(*Application : Chemin de Fret d'une ville A à une ville B*)
+
+  let () = export_ville "dot_format_graphs/flow_graph_fret" flow_graph_print in
+
+  let () = fichier "graphs/ville_graph.txt" in
 
   let () = write_file outfile flow_graph_print in
 
