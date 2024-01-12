@@ -67,7 +67,7 @@ let increase_flow graph path min_capacity =
 
   let ford_fulkerson gr source dest =
     let rec loop graph =
-      let test_find_path = find_path graph 0 2 in
+      let test_find_path = find_path graph source dest in
 
       let () = printf "path : [" in
       let () = List.iter (printf "%d ") test_find_path in
