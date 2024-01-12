@@ -59,7 +59,7 @@ let increase_flow graph path min_capacity =
     | src :: tgt :: rest ->
       match find_arc gr src tgt with
       | Some arc ->
-        let updated_gr = update_arcs2 gr updated_arc min_capacity in
+        let updated_gr = update_arcs2 gr arc min_capacity in
         aux updated_gr (tgt :: rest)
       | None -> assert false 
   in
