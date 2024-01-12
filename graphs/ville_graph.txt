@@ -1,4 +1,0 @@
-[Lyon;Bordeaux]
-[Marseille;Lyon;Dubai]
-[Seoul]
-

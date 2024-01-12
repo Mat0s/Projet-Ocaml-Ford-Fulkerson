@@ -2,7 +2,6 @@ open Tools
 open Graph
 open Printf
 
-
 let init gr =
   let aux gr arc1 = add_arc gr arc1.tgt arc1.src 0 in
   e_fold gr aux gr
@@ -104,8 +103,25 @@ let transform gr_init gr_ecart =
 
 
 (*Application : Chemin de Fret d'une ville A à une ville B*)
-  
-let tabVilles = ["Toulouse"; "Dubai"; "Marseille"; "Lyon"; "Bruxelles"; "Reykjavik"; "Washington"; "Pekin"; "Tokyo"; "Seoul"; "Sydney"; "Bordeaux"; "Casablanca"] 
+let create_tab_villes filename =
+try
+  let ic = open_in filename in
+  let rec read_lines tabVilles=
+    try
+      let line = input_line ic in
+
+      match String.split_on_char ' ' line with
+      | "Node"::node_str::_-> read_lines (node_str::tabVilles)
+      | _ -> read_lines tabVilles
+      
+    with End_of_file -> close_in ic;
+    tabVilles
+  in
+  read_lines []
+  with
+  | Sys_error msg -> print_endline ("Erreur d'ouverture du fichier : " ^ msg);[]
+
+let tabVilles = create_tab_villes "graphs/user_graph.txt" 
 
 let getVille id = List.nth tabVilles id
 
@@ -136,61 +152,60 @@ let export_ville path gr=
 
 
 
-let file = "graphs/graph_villes.txt"
 
+let fichier filename =
 
-let fichier nom_fichier =
-
-  let string_to_list str =
-    let len = String.length str in
-    let rec split acc start =
-      if start >= len then
-        List.rev acc
-      else
-        match str.[start] with
-        | '[' | ';' -> split acc (start + 1)
-        | ']' -> List.rev acc
-        | _ ->
-          let end_pos =
-            try String.index_from str start ';'
-            with Not_found -> String.index_from str start ']'
-          in
-          let city = String.sub str start (end_pos - start) in
-          split (city :: acc) (end_pos + 1)
-    in
-    split [] 1
-  in
-  
   try
-    let canal = open_in nom_fichier in
-    let oc = open_out file in
-    try
-      while true do
-        let ligne = input_line canal in
-        let list_ville = string_to_list ligne in
-        let node = List.hd list_ville in
-        let _arcs = List.tl list_ville in
+    let ic = open_in filename in
+    let rec read_lines (acc_nodes,acc_arcs,src_dest) =
+      try
+        let line = input_line ic in
 
-        Printf.fprintf oc "n 1 50 %d" (getId node);
-        Printf.fprintf oc "\n";
-          (*print les arcs dans le fichier*)
+        match String.split_on_char ' ' line with
+        | "Node"::node_str::_-> 
+          let node = getId node_str in
+          read_lines ((node::acc_nodes),acc_arcs,src_dest)
+
+        | "Arc"::src_str::tgt_str::capa_str::_->
+          let capa=int_of_string capa_str in
+          let src=getId src_str in
+          let tgt=getId tgt_str in
+          read_lines (acc_nodes,[src;tgt;capa]::acc_arcs,src_dest)
+
+        | "Source"::src_str::_ -> 
+          let src = getId src_str in
+          read_lines (acc_nodes,acc_arcs,src::src_dest)
+
+        | "Destination"::dest_str::_ -> 
+          let dst = getId dest_str in
+          read_lines (acc_nodes,acc_arcs,dst::src_dest)
+          
+        | _ -> read_lines (acc_nodes,acc_arcs,src_dest)
+      with End_of_file -> close_in ic; 
+      (List.rev acc_nodes,List.rev acc_arcs, List.rev src_dest)
+    in
+    let (nodes, arcs, src_dest) = read_lines ([],[],[]) in
+    
+    let gr = empty_graph in
+    let rec create_nodes gr2 l = match l with
+                    |[]-> gr2
+                    |node::rest -> create_nodes (new_node gr2 node) rest
+    in
+    let gr_nodes = create_nodes gr nodes in
 
 
-        (*List.iter (fun elem -> Printf.fprintf oc "%s " elem) list_ville;*)
-        
+    let rec create_arcs gr2 l = match l with
+                    |[]-> gr2
+                    |arc::rest -> 
+                      let arc_add = {src=(List.nth arc 0); tgt=(List.nth arc 1); lbl=(List.nth arc 2)} in
+                      create_arcs (new_arc gr2 arc_add) rest
+    in
+    let gr_final = create_arcs gr_nodes arcs in
 
-        
-        
+    (gr_final, src_dest)
 
-
-        (*Printf.fprintf oc "%s" node;*)
-        
-        (*print_endline ligne;*)
-      done
-    with
-    | End_of_file -> close_in canal
   with
-  | Sys_error msg -> print_endline ("Erreur d'ouverture du fichier : " ^ msg)
+  | Sys_error msg -> print_endline ("Erreur d'ouverture du fichier : " ^ msg);(empty_graph,[])
 
 
   

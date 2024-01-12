@@ -1,0 +1,38 @@
+Source Berlin
+Destination Reykjavik
+
+Node AiguesVives
+Node BourgoinJallieu 
+Node Reykjavik
+Node Berlin
+Node Kaunas
+Node Oslo
+Node Seoul
+Node LaHavane
+Node Tokyo
+
+Arc AiguesVives BourgoinJallieu 1
+Arc AiguesVives LaHavane 10
+
+Arc BourgoinJallieu AiguesVives 2
+Arc BourgoinJallieu Reykjavik 4
+Arc BourgoinJallieu Oslo 8
+
+Arc Reykjavik Seoul 12
+
+Arc Berlin Tokyo 14
+Arc Berlin Oslo 7
+
+Arc Kaunas AiguesVives 2
+
+Arc Oslo Seoul 9
+
+Arc Seoul Reykjavik 6
+Arc Seoul BourgoinJallieu 3
+
+Arc LaHavane AiguesVives 5
+
+Arc Tokyo Kaunas 8
+Arc Tokyo Berlin 19
+Arc Tokyo Oslo 13
+Arc Tokyo Seoul 24
